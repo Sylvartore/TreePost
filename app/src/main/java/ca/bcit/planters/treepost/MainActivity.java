@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
 
                 MapController mMapController = (MapController) map.getController();
                 mMapController.setZoom(15);
-                GeoPoint gPt = new GeoPoint(latitude, longitude);
+                GeoPoint gPt = new GeoPoint(latitude, longitude); // for New West: 49.2057, -122.9110
                 mMapController.setCenter(gPt);
             }
 
