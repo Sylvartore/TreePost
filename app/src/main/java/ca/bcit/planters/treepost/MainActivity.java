@@ -1,15 +1,23 @@
 package ca.bcit.planters.treepost;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.simplefastpoint.LabelledGeoPoint;
+import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay;
+import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlayOptions;
+import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -23,6 +31,13 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends Activity {
@@ -38,6 +53,82 @@ public class MainActivity extends Activity {
         map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         getLocation();
+        // create 10k labelled points
+// in most cases, there will be no problems of displaying >100k points, feel free to try
+        List<IGeoPoint> points = new ArrayList<>();
+
+
+
+
+
+
+
+        List<String[]> list = new ArrayList<>();
+        try {
+            InputStream in = getResources().openRawResource(R.raw.tree_west);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+            String line;
+            reader.readLine(); // skip the first line
+            while ((line = reader.readLine()) != null) {
+                String[] row = line.split(",");
+                list.add(row);
+            }
+            in.close();
+            reader.close();
+            /*
+            in = getResources().openRawResource(R.raw.tree_east);
+            reader = new BufferedReader(new InputStreamReader(in));
+
+            reader.readLine(); // skip the first line
+            while ((line = reader.readLine()) != null) {
+                String[] row = line.split(",");
+                list.add(row);
+            }
+            */
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading csv files");
+        }
+
+        for (String[] row : list) {
+            if(!row[3].equals("")) {
+                points.add(new LabelledGeoPoint(Double.parseDouble(row[7]), Double.parseDouble(row[6]), row[3]));
+            }
+        }
+
+
+
+// wrap them in a theme
+        SimplePointTheme pt = new SimplePointTheme(points, false);
+
+// create label style
+        Paint textStyle = new Paint();
+        textStyle.setStyle(Paint.Style.FILL);
+        textStyle.setColor(Color.parseColor("#0000ff"));
+        textStyle.setTextAlign(Paint.Align.CENTER);
+        textStyle.setTextSize(24);
+
+// set some visual options for the overlay
+// we use here MAXIMUM_OPTIMIZATION algorithm, which works well with >100k points
+        SimpleFastPointOverlayOptions opt = SimpleFastPointOverlayOptions.getDefaultStyle()
+                .setAlgorithm(SimpleFastPointOverlayOptions.RenderingAlgorithm.MAXIMUM_OPTIMIZATION)
+                .setRadius(15).setIsClickable(true).setCellSize(30).setTextStyle(textStyle);
+
+// create the overlay with the theme
+        final SimpleFastPointOverlay sfpo = new SimpleFastPointOverlay(pt, opt);
+
+// onClick callback
+        sfpo.setOnClickListener(new SimpleFastPointOverlay.OnClickListener() {
+            @Override
+            public void onClick(SimpleFastPointOverlay.PointAdapter points, Integer point) {
+                Toast.makeText(map.getContext()
+                        , "You clicked " + ((LabelledGeoPoint) points.get(point)).getLabel()
+                        , Toast.LENGTH_SHORT).show();
+            }
+        });
+
+// add overlay
+        map.getOverlays().add(sfpo);
     }
 
     public void onResume() {
