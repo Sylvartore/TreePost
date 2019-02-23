@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "299157329024",
+    "firebase_url": "https://treepost-e9f58.firebaseio.com",
+    "project_id": "treepost-e9f58",
+    "storage_bucket": "treepost-e9f58.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:299157329024:android:8bdeb4266519b4e7",
+        "android_client_info": {
+          "package_name": "ca.bcit.planters.treepost"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "299157329024-5n4k6ccm1gah5t89kmg5il1tjuekf04f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ca.bcit.planters.treepost",
+            "certificate_hash": "d6c45e009dcdfb630c76f4bad5c033961b84263e"
+          }
+        },
+        {
+          "client_id": "299157329024-8lhhupfe17mjuf939g2mgbk5g4rr6sd2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARDDXxxyyJRn7f7uQ_ymmdcOK4cTLZXFc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "299157329024-8lhhupfe17mjuf939g2mgbk5g4rr6sd2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

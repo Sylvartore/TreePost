@@ -32,6 +32,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,23 +49,20 @@ public class MainActivity extends Activity {
 
     private static final int REQUEST_CODE = 10;
     MapView map = null;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Configuration.getInstance().load(getApplicationContext(), PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
         setContentView(R.layout.activity_main);
+
         map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         getLocation();
-        // create 10k labelled points
-// in most cases, there will be no problems of displaying >100k points, feel free to try
+
         List<IGeoPoint> points = new ArrayList<>();
-
-
-
-
-
 
 
         List<String[]> list = new ArrayList<>();
@@ -122,8 +124,12 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(SimpleFastPointOverlay.PointAdapter points, Integer point) {
                 Toast.makeText(map.getContext()
-                        , "You clicked " + ((LabelledGeoPoint) points.get(point)).getLabel()
+                        , "You clicked " + ((LabelledGeoPoint) points.get(point)).getLatitude() + " " + ((LabelledGeoPoint) points.get(point)).getLongitude()
                         , Toast.LENGTH_SHORT).show();
+                String treeId = points.get(point).getLatitude() + "_" + points.get(point).getLongitude();
+                Intent intent = new Intent(MainActivity.this, TreeActivity.class);
+                intent.putExtra("id",  treeId.replace('.', '*'));
+                startActivity(intent);
             }
         });
 
