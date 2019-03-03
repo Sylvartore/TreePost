@@ -4,50 +4,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".TreeActivity">
-
-    <TextView
-        android:id="@+id/pub_msg"
-        android:layout_width="362dp"
-        android:layout_height="168dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.484"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_pub_msg" />
 
     <TextView
         android:id="@+id/label_pub_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:text="Public Message"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btn_new_pub_msg"
-        android:layout_width="69dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="12dp"
-        android:text="Post"
-        app:layout_constraintEnd_toEndOf="@+id/pub_msg"
-        app:layout_constraintTop_toBottomOf="@+id/pub_msg" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="@dimen/edit_background_height"
+        app:layout_constraintBottom_toTopOf="@+id/edit_post"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <EditText
-        android:id="@+id/edit_new_pub_msg"
-        android:layout_width="285dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="Say something ..."
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toStartOf="@+id/btn_new_pub_msg"
-        app:layout_constraintStart_toStartOf="@+id/pub_msg"
-        app:layout_constraintTop_toBottomOf="@+id/pub_msg" />
+
+
+    <RelativeLayout
+        android:id="@+id/edit_post"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/edit_background_height"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/edit_post_background">
+
+        <Button
+            android:id="@+id/btn_new_pub_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:text="@string/btn_post" />
+
+        <EditText
+            android:id="@+id/edit_new_pub_msg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:layout_toStartOf="@+id/btn_new_pub_msg"
+            android:background="@color/fui_transparent"
+            android:ems="10"
+            android:hint="@string/edit_msg_hint"
+            android:inputType="text" />
+
+    </RelativeLayout>
+
+
+
 
 </android.support.constraint.ConstraintLayout>

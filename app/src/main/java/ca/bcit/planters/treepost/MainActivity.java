@@ -49,8 +49,8 @@ public class MainActivity extends Activity {
 
     private static final int REQUEST_CODE = 10;
     MapView map = null;
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference();
+    //FirebaseDatabase database = FirebaseDatabase.getInstance();
+    //DatabaseReference myRef = database.getReference();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,47 +93,43 @@ public class MainActivity extends Activity {
         }
 
         for (String[] row : list) {
-            if(!row[3].equals("")) {
+            if (!row[3].equals("")) {
                 points.add(new LabelledGeoPoint(Double.parseDouble(row[7]), Double.parseDouble(row[6]), row[3]));
             }
         }
 
 
-
-// wrap them in a theme
+        // wrap them in a theme
         SimplePointTheme pt = new SimplePointTheme(points, false);
 
-// create label style
+        // create label style
         Paint textStyle = new Paint();
         textStyle.setStyle(Paint.Style.FILL);
         textStyle.setColor(Color.parseColor("#0000ff"));
         textStyle.setTextAlign(Paint.Align.CENTER);
         textStyle.setTextSize(24);
 
-// set some visual options for the overlay
-// we use here MAXIMUM_OPTIMIZATION algorithm, which works well with >100k points
+        // set some visual options for the overlay
+        // we use here MAXIMUM_OPTIMIZATION algorithm, which works well with >100k points
         SimpleFastPointOverlayOptions opt = SimpleFastPointOverlayOptions.getDefaultStyle()
                 .setAlgorithm(SimpleFastPointOverlayOptions.RenderingAlgorithm.MAXIMUM_OPTIMIZATION)
                 .setRadius(15).setIsClickable(true).setCellSize(30).setTextStyle(textStyle);
 
-// create the overlay with the theme
+        // create the overlay with the theme
         final SimpleFastPointOverlay sfpo = new SimpleFastPointOverlay(pt, opt);
 
-// onClick callback
+        // onClick callback
         sfpo.setOnClickListener(new SimpleFastPointOverlay.OnClickListener() {
             @Override
             public void onClick(SimpleFastPointOverlay.PointAdapter points, Integer point) {
-                Toast.makeText(map.getContext()
-                        , "You clicked " + ((LabelledGeoPoint) points.get(point)).getLatitude() + " " + ((LabelledGeoPoint) points.get(point)).getLongitude()
-                        , Toast.LENGTH_SHORT).show();
                 String treeId = points.get(point).getLatitude() + "_" + points.get(point).getLongitude();
                 Intent intent = new Intent(MainActivity.this, TreeActivity.class);
-                intent.putExtra("id",  treeId.replace('.', '*'));
+                intent.putExtra("id", treeId.replace('.', '*'));
                 startActivity(intent);
             }
         });
 
-// add overlay
+        // add overlay
         map.getOverlays().add(sfpo);
     }
 
@@ -146,7 +142,6 @@ public class MainActivity extends Activity {
         super.onPause();
         map.onPause();
     }
-
 
 
     private void getLocation() {
@@ -165,7 +160,7 @@ public class MainActivity extends Activity {
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-       String provider = locationManager.getBestProvider(criteria, true);
+        String provider = locationManager.getBestProvider(criteria, true);
 
         List<String> providerList = locationManager.getProviders(true);
         if (providerList.contains(LocationManager.NETWORK_PROVIDER)) {

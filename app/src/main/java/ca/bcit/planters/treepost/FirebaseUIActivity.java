@@ -32,7 +32,7 @@ public class FirebaseUIActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_firebase_ui);
-
+        getSupportActionBar().hide();
         mAuth = FirebaseAuth.getInstance();
         mEmail = findViewById(R.id.input_email);
         mPassword = findViewById(R.id.input_password);
