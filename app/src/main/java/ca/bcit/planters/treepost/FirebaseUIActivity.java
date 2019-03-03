@@ -19,6 +19,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class FirebaseUIActivity extends AppCompatActivity {
 
+    public static User currentUser;
+
     private static final String TAG = "FirebaseUIActivity";
 
     private FirebaseAuth mAuth;
@@ -74,6 +76,7 @@ public class FirebaseUIActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            currentUser = new User(user.getUid(), user.getEmail());
                             Toast.makeText(FirebaseUIActivity.this, "Logged In.",
                                     Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(FirebaseUIActivity.this, MainActivity.class);
