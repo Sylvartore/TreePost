@@ -26,8 +26,6 @@
         app:layout_constraintBottom_toTopOf="@+id/edit_post"
         app:layout_constraintTop_toTopOf="parent"/>
 
-
-
     <RelativeLayout
         android:id="@+id/edit_post"
         android:layout_width="match_parent"

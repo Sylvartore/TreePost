@@ -3,4 +3,6 @@
     <string name="btn_post">Post</string>
     <string name="edit_msg_hint">Say something &#8230;</string>
     <string name="input_background">background image for input area</string>
+    <string name="btn_reply">Send</string>
+    <string name="edit_reply_hint">Reply &#8230;</string>
 </resources>

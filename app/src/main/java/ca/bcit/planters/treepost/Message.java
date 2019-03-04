@@ -2,8 +2,10 @@ package ca.bcit.planters.treepost;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Message {
@@ -11,6 +13,7 @@ public class Message {
     public Date timeStamp;
     public User owner;
     public String content;
+    public Map<String, Message> replies;
 
     public Message() {}
 
@@ -19,6 +22,7 @@ public class Message {
         this.timeStamp = timeStamp;
         this.owner = owner;
         this.content = content;
+        replies = new HashMap<>();
     }
 
     @Exclude
@@ -28,7 +32,7 @@ public class Message {
         result.put("timeStamp", timeStamp);
         result.put("owner", owner);
         result.put("content", content);
-
+        result.put("replies", replies);
         return result;
     }
 }

@@ -7,4 +7,18 @@
     <dimen name="card_msg_radius">0dp</dimen>
     <dimen name="card_min_height">90dp</dimen>
     <dimen name="edit_background_height">50dp</dimen>
+    <dimen name="msg_min_height">120dp</dimen>
+    <dimen name="msg_max_height">150dp</dimen>
+    <dimen name="msg_margin_top">30dp</dimen>
+    <dimen name="msg_margin_bottom">30dp</dimen>
+    <dimen name="msg_margin_horizontal">30dp</dimen>
+    <dimen name="msg_user_height">30dp</dimen>
+    <dimen name="msg_user_avatar_size">25dp</dimen>
+    <dimen name="msg_user_avatar_margin">5dp</dimen>
+    <dimen name="msg_date_margin_start">8dp</dimen>
+    <dimen name="msg_date_margin_bottom">-30dp</dimen>
+    <dimen name="reply_msg_user_avatar_size">20dp</dimen>
+    <dimen name="reply_msg_user_avatar_margin">3dp</dimen>
+    <dimen name="reply_msg_container_margin_Top">200dp</dimen>
+    <dimen name="reply_msg_container_margin_Bottom">50dp</dimen>
 </resources>

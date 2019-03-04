@@ -1,6 +1,7 @@
 package ca.bcit.planters.treepost;
 
 import android.content.Context;
+import android.content.Intent;
 import android.service.autofill.Dataset;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -57,7 +58,10 @@ public class TreeActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new MessageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Log.d("msgId",messageList.get(position).msgId);
+                Intent intent = new Intent(TreeActivity.this, MessageActivity.class);
+                intent.putExtra("msgId", messageList.get(position).msgId);
+                intent.putExtra("treeId", treeId);
+                startActivity(intent);
             }
         });
         SwipeableRecyclerViewTouchListener swipeTouchListener =
@@ -70,7 +74,7 @@ public class TreeActivity extends AppCompatActivity {
 
                             @Override
                             public boolean canSwipeLeft(int position) {
-                                return true;
+                                return messageList.get(position).owner.userId == FirebaseUIActivity.currentUser.userId;
                             }
 
                             @Override
@@ -109,6 +113,7 @@ public class TreeActivity extends AppCompatActivity {
                 Map<String, Object> childUpdates = new HashMap<>();
                 childUpdates.put("/trees/" + treeId + "/publicMsg/" +  key, msgValues);
                 myRef.updateChildren(childUpdates);
+                editNewPubMsg.setText("");
             }
         });
         myRef.addValueEventListener(new ValueEventListener() {
