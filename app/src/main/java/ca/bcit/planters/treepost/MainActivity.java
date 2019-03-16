@@ -1,5 +1,24 @@
 package ca.bcit.planters.treepost;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.widget.Toast;
+
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -10,33 +29,6 @@ import org.osmdroid.views.overlay.simplefastpoint.LabelledGeoPoint;
 import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay;
 import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlayOptions;
 import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme;
-
-import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
-import android.os.Build;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -121,11 +113,24 @@ public class MainActivity extends Activity {
         // onClick callback
         sfpo.setOnClickListener(new SimpleFastPointOverlay.OnClickListener() {
             @Override
-            public void onClick(SimpleFastPointOverlay.PointAdapter points, Integer point) {
-                String treeId = points.get(point).getLatitude() + "_" + points.get(point).getLongitude();
-                Intent intent = new Intent(MainActivity.this, TreeActivity.class);
-                intent.putExtra("id", treeId.replace('.', '*'));
-                startActivity(intent);
+            public void onClick(final SimpleFastPointOverlay.PointAdapter points, final Integer point) {
+
+                final String[] types = {"Public Message", "Private Message", "Cancel"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Select message type to view");
+                builder.setItems(types, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which != 2) {
+                            String treeId = points.get(point).getLatitude() + "_" + points.get(point).getLongitude();
+                            Intent intent = new Intent(MainActivity.this, TreeActivity.class);
+                            intent.putExtra("type", types[which]);
+                            intent.putExtra("id", treeId.replace('.', '*'));
+                            startActivity(intent);
+                        }
+                    }
+                });
+                builder.show();
             }
         });
 
