@@ -37,7 +37,7 @@ public class FirebaseUIActivity extends AppCompatActivity {
         mEmail = findViewById(R.id.input_email);
         mPassword = findViewById(R.id.input_password);
         btnLogIn = findViewById(R.id.btn_login);
-        btnLogIn.setOnClickListener(new View.OnClickListener(){
+        btnLogIn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -60,9 +60,17 @@ public class FirebaseUIActivity extends AppCompatActivity {
                             }, 3000);
                 } else {
                     Toast.makeText(FirebaseUIActivity.this, "Please enter email and password"
-                    , Toast.LENGTH_SHORT).show();
+                            , Toast.LENGTH_SHORT).show();
                 }
 
+            }
+        });
+
+        findViewById(R.id.link_signup).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FirebaseUIActivity.this, SignUpActivity.class);
+                startActivity(intent);
             }
         });
     }
