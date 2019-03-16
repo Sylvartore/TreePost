@@ -44,6 +44,13 @@ public class FirebaseUIActivity extends AppCompatActivity {
                 String email = mEmail.getText().toString();
                 String password = mPassword.getText().toString();
                 if (!email.equals("") && !password.equals("")) {
+                    if (!email.matches("^[_A-Za-z0-9-+]+(\\.[_A-Za-z0-9-]+)" +
+                            "*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")) {
+                        Toast.makeText(FirebaseUIActivity.this,
+                                "A valid email is required", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     btnLogIn.setEnabled(false);
                     final ProgressDialog progressDialog = new ProgressDialog(FirebaseUIActivity.this,
                             R.style.Theme_AppCompat_Light);
@@ -59,8 +66,8 @@ public class FirebaseUIActivity extends AppCompatActivity {
                                 }
                             }, 3000);
                 } else {
-                    Toast.makeText(FirebaseUIActivity.this, "Please enter email and password"
-                            , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FirebaseUIActivity.this,
+                            "Please enter email and password", Toast.LENGTH_SHORT).show();
                 }
 
             }

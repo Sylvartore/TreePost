@@ -38,7 +38,8 @@ public class SignUpActivity extends AppCompatActivity {
                 String password = mPassword.getText().toString();
                 String confirm = mConfirm.getText().toString();
 
-                if (!email.contains("@") || !email.contains(".")) {
+                if (!email.matches("^[_A-Za-z0-9-+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+" +
+                        "(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")) {
                     Toast.makeText(SignUpActivity.this, "A valid email is required",
                             Toast.LENGTH_SHORT).show();
                     return;
@@ -68,6 +69,7 @@ public class SignUpActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            FirebaseUIActivity.currentUser = new User(user.getUid(), user.getEmail());
                             Toast.makeText(SignUpActivity.this,
                                     "Sign up success! Logged in", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
