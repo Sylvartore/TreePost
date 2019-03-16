@@ -1,8 +1,8 @@
 package ca.bcit.planters.treepost;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -59,7 +60,7 @@ public class MessageActivity extends AppCompatActivity {
                     message.content = msgContent.getText().toString();
                     Map<String, Object> msgValues = message.toMap();
                     Map<String, Object> childUpdates = new HashMap<>();
-                    childUpdates.put("/trees/" + treeId + "/publicMsg/" +  msgId, msgValues);
+                    childUpdates.put("/trees/" + treeId + "/publicMsg/" + msgId, msgValues);
                     myRef.updateChildren(childUpdates);
                 }
             }
@@ -81,12 +82,14 @@ public class MessageActivity extends AppCompatActivity {
                 msgContent.setFocusable(FirebaseUIActivity.currentUser.userId.equals(message.owner.userId));
                 msgUserName.setText(message.owner.email);
                 msgUserName.requestFocus();
+                msgUserName.setOnLongClickListener(new AddFriendListener(message.owner,MessageActivity.this));
+                msgUserAvatar.setOnLongClickListener(new AddFriendListener(message.owner, MessageActivity.this));
                 replyMessageList.clear();
                 for (DataSnapshot ds : dataSnapshot.child("trees").child(treeId).child("publicMsg").child(msgId).child("replies").getChildren()) {
                     Message reply = ds.getValue(Message.class);
                     replyMessageList.add(reply);
                 }
-                Log.d(TAG, "onDataChange: " + (replyMessageList.size() == 0 ? 0 : replyMessageList.get(replyMessageList.size()-1).content));
+                Log.d(TAG, "onDataChange: " + (replyMessageList.size() == 0 ? 0 : replyMessageList.get(replyMessageList.size() - 1).content));
                 msgDate.setText(message.timeStamp.toString());
                 adapter.notifyDataSetChanged();
             }
@@ -124,7 +127,7 @@ public class MessageActivity extends AppCompatActivity {
                     Map<String, Object> msgValues = message.toMap();
 
                     Map<String, Object> childUpdates = new HashMap<>();
-                    childUpdates.put("/trees/" + treeId + "/publicMsg/" +  msgId, msgValues);
+                    childUpdates.put("/trees/" + treeId + "/publicMsg/" + msgId, msgValues);
                     myRef.updateChildren(childUpdates);
                     replyMsg.setText("");
                 }

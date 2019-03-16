@@ -48,6 +48,8 @@ public class ReplyMessageAdapter extends RecyclerView.Adapter<ReplyMessageAdapte
         holder.content.setText(message.content);
         holder.date.setText(message.timeStamp.toString());
         holder.userName.setText(message.owner.email);
+        holder.userName.setOnLongClickListener(new AddFriendListener(message.owner,mContext));
+        holder.userAvatar.setOnLongClickListener(new AddFriendListener(message.owner,mContext));
     }
 
     @Override
