@@ -2,9 +2,8 @@ package ca.bcit.planters.treepost;
 
 import android.content.Context;
 import android.content.Intent;
-import android.service.autofill.Dataset;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +31,8 @@ public class TreeActivity extends AppCompatActivity {
 
     private static final String TAG = "TreeActivity";
 
+    private boolean isPrivateMsg;
+    private String msgType;
     private String treeId;
     private EditText editNewPubMsg;
 
@@ -61,6 +62,7 @@ public class TreeActivity extends AppCompatActivity {
                 Intent intent = new Intent(TreeActivity.this, MessageActivity.class);
                 intent.putExtra("msgId", messageList.get(position).msgId);
                 intent.putExtra("treeId", treeId);
+                intent.putExtra("msgType",msgType);
                 startActivity(intent);
             }
         });
@@ -80,7 +82,7 @@ public class TreeActivity extends AppCompatActivity {
                             @Override
                             public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
-                                    DeletePublicMsg(messageList.get(position).msgId);
+                                    DeleteMsg(messageList.get(position).msgId);
                                     messageList.remove(position);
                                     adapter.notifyDataSetChanged();
                                 }
@@ -94,24 +96,43 @@ public class TreeActivity extends AppCompatActivity {
                         });
 
         recyclerView.addOnItemTouchListener(swipeTouchListener);
-        treeId = (String) getIntent().getExtras().get("id");
+        treeId = getIntent().getExtras().get("id").toString();
+        String type = getIntent().getExtras().get("type").toString();
+        ((TextView) findViewById(R.id.label_msg_type)).setText(type);
+        isPrivateMsg = "Private Message".equals(type);
+        msgType = isPrivateMsg ? "privateMsg" : "publicMsg";
+
         editNewPubMsg = findViewById(R.id.edit_new_pub_msg);
         editNewPubMsg.bringToFront();
         Button btnPostNewPubMsg = findViewById(R.id.btn_new_pub_msg);
         btnPostNewPubMsg.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                if (editNewPubMsg.getText().toString().isEmpty()) {
+                    Toast.makeText(TreeActivity.this, "Empty content", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 InputMethodManager inputManager = (InputMethodManager)
                         getSystemService(Context.INPUT_METHOD_SERVICE);
 
                 inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
 
-                String key = myRef.child("trees").child(treeId).child("publicMsg").push().getKey();
-                Message newMsg = new Message(key, new Date(), FirebaseUIActivity.currentUser, editNewPubMsg.getText().toString());
-                Map<String, Object> msgValues = newMsg.toMap();
+                String key = myRef.child("trees").child(treeId).child(msgType).push().getKey();
+                String msg = editNewPubMsg.getText().toString();
 
+                if (isPrivateMsg) {
+                    Intent intent = new Intent(TreeActivity.this, FriendSelect.class);
+                    intent.putExtra("key", key);
+                    intent.putExtra("msg", msg);
+                    intent.putExtra("treeId", treeId);
+                    startActivity(intent);
+                    return;
+                }
+
+                Message newMsg = new Message(key, new Date(), FirebaseUIActivity.currentUser, msg);
+                Map<String, Object> msgValues = newMsg.toMap();
                 Map<String, Object> childUpdates = new HashMap<>();
-                childUpdates.put("/trees/" + treeId + "/publicMsg/" +  key, msgValues);
+                childUpdates.put("/trees/" + treeId + "/publicMsg/" + key, msgValues);
                 myRef.updateChildren(childUpdates);
                 editNewPubMsg.setText("");
             }
@@ -121,7 +142,7 @@ public class TreeActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                ShowPublicMsg(dataSnapshot);
+                ShowMsg(dataSnapshot);
             }
 
             @Override
@@ -132,17 +153,20 @@ public class TreeActivity extends AppCompatActivity {
         });
     }
 
-    public void DeletePublicMsg(String msgId) {
-        myRef.child("trees").child(treeId).child("publicMsg").child(msgId).removeValue();
+    public void DeleteMsg(String msgId) {
+        myRef.child("trees").child(treeId).child(msgType).child(msgId).removeValue();
     }
 
-    public void ShowPublicMsg(DataSnapshot dataSnapshot) {
+    private void ShowMsg(DataSnapshot dataSnapshot) {
         messageList.clear();
-        for (DataSnapshot ds : dataSnapshot.child("trees").child(treeId).child("publicMsg").getChildren()) {
-            Message pubMsg = ds.getValue(Message.class);
-            String key = ds.getKey();
-            Log.d("Key: ", key);
-            messageList.add(pubMsg);
+        for (DataSnapshot ds : dataSnapshot.child("trees").child(treeId).child(msgType).getChildren()) {
+            Message msg = ds.getValue(Message.class);
+            String curId = FirebaseUIActivity.currentUser.userId;
+            if (isPrivateMsg && msg != null) {
+                if (!msg.owner.userId.equals(curId) && !msg.receiver.userId.equals(curId))
+                    continue;
+            }
+            messageList.add(msg);
         }
         adapter.notifyDataSetChanged();
     }

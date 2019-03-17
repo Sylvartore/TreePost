@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,6 +38,7 @@ public class MessageActivity extends AppCompatActivity {
     private String msgId;
     private String treeId;
     private Message message;
+    private String msgType;
 
     private RecyclerView replyRecyclerView;
     private ReplyMessageAdapter adapter;
@@ -52,6 +52,9 @@ public class MessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
         getSupportActionBar().hide();
+        msgId = (String) getIntent().getExtras().get("msgId");
+        treeId = (String) getIntent().getExtras().get("treeId");
+        msgType = (String) getIntent().getExtras().get("msgType");
         msgContent = findViewById(R.id.msg_content);
         msgContent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -60,7 +63,7 @@ public class MessageActivity extends AppCompatActivity {
                     message.content = msgContent.getText().toString();
                     Map<String, Object> msgValues = message.toMap();
                     Map<String, Object> childUpdates = new HashMap<>();
-                    childUpdates.put("/trees/" + treeId + "/publicMsg/" + msgId, msgValues);
+                    childUpdates.put("/trees/" + treeId + "/" + msgType + "/" + msgId, msgValues);
                     myRef.updateChildren(childUpdates);
                 }
             }
@@ -70,22 +73,20 @@ public class MessageActivity extends AppCompatActivity {
         msgUserName = findViewById(R.id.msg_user_name);
         replyMsg = findViewById(R.id.edit_new_reply_msg);
         replyMsg.bringToFront();
-        msgId = (String) getIntent().getExtras().get("msgId");
-        treeId = (String) getIntent().getExtras().get("treeId");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                message = dataSnapshot.child("trees").child(treeId).child("publicMsg").child(msgId).getValue(Message.class);
+                message = dataSnapshot.child("trees").child(treeId).child(msgType).child(msgId).getValue(Message.class);
                 msgContent.setText(message.content);
                 msgContent.setFocusable(FirebaseUIActivity.currentUser.userId.equals(message.owner.userId));
                 msgUserName.setText(message.owner.email);
                 msgUserName.requestFocus();
-                msgUserName.setOnLongClickListener(new AddFriendListener(message.owner,MessageActivity.this));
+                msgUserName.setOnLongClickListener(new AddFriendListener(message.owner, MessageActivity.this));
                 msgUserAvatar.setOnLongClickListener(new AddFriendListener(message.owner, MessageActivity.this));
                 replyMessageList.clear();
-                for (DataSnapshot ds : dataSnapshot.child("trees").child(treeId).child("publicMsg").child(msgId).child("replies").getChildren()) {
+                for (DataSnapshot ds : dataSnapshot.child("trees").child(treeId).child(msgType).child(msgId).child("replies").getChildren()) {
                     Message reply = ds.getValue(Message.class);
                     replyMessageList.add(reply);
                 }
@@ -119,7 +120,7 @@ public class MessageActivity extends AppCompatActivity {
 
                 inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
-                String key = myRef.child("trees").child(treeId).child("publicMsg").child(msgId).child("replies").push().getKey();
+                String key = myRef.child("trees").child(treeId).child(msgType).child(msgId).child("replies").push().getKey();
                 if (message != null) {
                     if (message.replies == null)
                         message.replies = new HashMap<>();
@@ -127,7 +128,7 @@ public class MessageActivity extends AppCompatActivity {
                     Map<String, Object> msgValues = message.toMap();
 
                     Map<String, Object> childUpdates = new HashMap<>();
-                    childUpdates.put("/trees/" + treeId + "/publicMsg/" + msgId, msgValues);
+                    childUpdates.put("/trees/" + treeId + "/" + msgType + "/" + msgId, msgValues);
                     myRef.updateChildren(childUpdates);
                     replyMsg.setText("");
                 }
