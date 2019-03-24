@@ -7,17 +7,26 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.config.Configuration;
@@ -25,6 +34,10 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Overlay;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.simplefastpoint.LabelledGeoPoint;
 import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay;
 import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlayOptions;
@@ -41,9 +54,18 @@ public class MainActivity extends Activity {
 
     private static final int REQUEST_CODE = 10;
     MapView map = null;
-    //FirebaseDatabase database = FirebaseDatabase.getInstance();
-    //DatabaseReference myRef = database.getReference();
+    com.google.firebase.database.FirebaseDatabase database = com.google.firebase.database.FirebaseDatabase.getInstance();
+    com.google.firebase.database.DatabaseReference myRef = database.getReference();
+    Drawable bwTree = null;
 
+    class PopulateIcon extends AsyncTask<OverlayItem, Void, Void> {
+        @Override
+        public Void doInBackground(OverlayItem... items){
+            final OverlayItem overlayItem = items[0];
+            overlayItem.setMarker(bwTree);
+            return null;
+        }
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +76,12 @@ public class MainActivity extends Activity {
         map.setTileSource(TileSourceFactory.MAPNIK);
         getLocation();
 
-        List<IGeoPoint> points = new ArrayList<>();
+        MapController mMapController = (MapController) map.getController();
+        mMapController.setZoom(15);
+        GeoPoint gPt = new GeoPoint(49.2057, -122.911); // for New West: 49.2057, -122.9110
+        mMapController.setCenter(gPt);
 
+        List<IGeoPoint> points = new ArrayList<>(); List<OverlayItem> items = new ArrayList<>();
 
         List<String[]> list = new ArrayList<>();
         try {
@@ -70,7 +96,7 @@ public class MainActivity extends Activity {
             }
             in.close();
             reader.close();
-            /*
+
             in = getResources().openRawResource(R.raw.tree_east);
             reader = new BufferedReader(new InputStreamReader(in));
 
@@ -79,18 +105,85 @@ public class MainActivity extends Activity {
                 String[] row = line.split(",");
                 list.add(row);
             }
-            */
+
         } catch (IOException e) {
             throw new RuntimeException("Error reading csv files");
         }
 
+        Bitmap b = ((BitmapDrawable)getDrawable(R.drawable.col)).getBitmap();
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 100, 100, false);
+        bwTree = new BitmapDrawable(getResources(), bitmapResized);
+
         for (String[] row : list) {
             if (!row[3].equals("")) {
-                points.add(new LabelledGeoPoint(Double.parseDouble(row[7]), Double.parseDouble(row[6]), row[3]));
+                double latitude = Double.parseDouble(row[7]);
+                double longitude = Double.parseDouble(row[6]);
+                IGeoPoint point = new LabelledGeoPoint(latitude, longitude, row[3]);
+                points.add(point);
+
+
+                final OverlayItem overlayItem = new OverlayItem("", "", point);
+                //Bitmap b = ((BitmapDrawable)getDrawable(R.drawable.col)).getBitmap();
+                //Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 100, 100, false);
+                //overlayItem.setMarker(new BitmapDrawable(getResources(), bitmapResized));
+
+                overlayItem.setMarker(new ColorDrawable(Color.TRANSPARENT));
+                new PopulateIcon().execute(overlayItem);
+                items.add(overlayItem);
+
+
+                /*
+                String id = latitude+"_"+longitude;
+                id = id.replace('.', '*');
+                com.google.firebase.database.DatabaseReference ref = myRef.child(id);
+                com.google.firebase.database.DatabaseReference pubMsgRef = ref.child("publicMsg");
+                com.google.firebase.database.DatabaseReference privMsgRef = ref.child("privateMsg");
+                pubMsgRef.addValueEventListener(new ValueEventListener() {
+                    private OverlayItem it = overlayItem;
+
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            Message msg = ds.getValue(Message.class);
+                            if(msg.owner.equals(getIntent().getStringExtra("email"))) {
+                                Bitmap b = ((BitmapDrawable)getDrawable(R.drawable.col)).getBitmap();
+                                Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 100, 100, false);
+                                it.setMarker(new BitmapDrawable(getResources(), bitmapResized));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                pubMsgRef.addValueEventListener(new ValueEventListener() {
+                    private OverlayItem it = overlayItem;
+
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            Message msg = ds.getValue(Message.class);
+                            if(msg.owner.equals(getIntent().getStringExtra("email"))) {
+                                Bitmap b = ((BitmapDrawable)getDrawable(R.drawable.col)).getBitmap();
+                                Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 100, 100, false);
+                                it.setMarker(new BitmapDrawable(getResources(), bitmapResized));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                */
             }
         }
 
 
+        /*
         // wrap them in a theme
         SimplePointTheme pt = new SimplePointTheme(points, false);
 
@@ -136,6 +229,41 @@ public class MainActivity extends Activity {
 
         // add overlay
         map.getOverlays().add(sfpo);
+        */
+
+
+        Overlay overlay = new ItemizedOverlayWithFocus<>(this.getApplicationContext(), items,
+            new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+
+                @Override
+                public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
+                    final String[] types = {"Public Message", "Private Message", "Cancel"};
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Select message type to view");
+                    builder.setItems(types, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which != 2) {
+                                IGeoPoint clicked = item.getPoint();
+                                String treeId = clicked.getLatitude() + "_" + clicked.getLongitude();
+                                Intent intent = new Intent(MainActivity.this, TreeActivity.class);
+                                intent.putExtra("type", types[which]);
+                                intent.putExtra("id", treeId.replace('.', '*'));
+                                startActivity(intent);
+                            }
+                        }
+                    });
+                    builder.show();
+                    return true;
+                }
+
+                @Override
+                public boolean onItemLongPress(final int index, final OverlayItem item) {
+                    return false;
+                }
+            });
+        map.getOverlays().add(overlay);
+        map.invalidate();
     }
 
     public void onResume() {

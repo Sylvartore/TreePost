@@ -95,6 +95,7 @@ public class FirebaseUIActivity extends AppCompatActivity {
                             Toast.makeText(FirebaseUIActivity.this, "Logged In.",
                                     Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(FirebaseUIActivity.this, MainActivity.class);
+                            intent.putExtra("email", user.getEmail());
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
