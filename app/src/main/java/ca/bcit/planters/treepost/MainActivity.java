@@ -26,8 +26,6 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.simplefastpoint.LabelledGeoPoint;
-import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay;
-import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlayOptions;
 import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme;
 
 import java.io.BufferedReader;
@@ -54,8 +52,12 @@ public class MainActivity extends Activity {
         map.setTileSource(TileSourceFactory.MAPNIK);
         getLocation();
 
-        List<IGeoPoint> points = new ArrayList<>();
+        MapController mMapController = (MapController) map.getController();
+        mMapController.setZoom(15);
+        GeoPoint gPt = new GeoPoint(49.2057, -122.911); // for New West: 49.2057, -122.9110
+        mMapController.setCenter(gPt);
 
+        List<IGeoPoint> points = new ArrayList<>();
 
         List<String[]> list = new ArrayList<>();
         try {
@@ -70,7 +72,7 @@ public class MainActivity extends Activity {
             }
             in.close();
             reader.close();
-            /*
+
             in = getResources().openRawResource(R.raw.tree_east);
             reader = new BufferedReader(new InputStreamReader(in));
 
@@ -79,7 +81,7 @@ public class MainActivity extends Activity {
                 String[] row = line.split(",");
                 list.add(row);
             }
-            */
+
         } catch (IOException e) {
             throw new RuntimeException("Error reading csv files");
         }
@@ -92,7 +94,7 @@ public class MainActivity extends Activity {
 
 
         // wrap them in a theme
-        SimplePointTheme pt = new SimplePointTheme(points, false);
+        CustomizedPointTheme pt = new CustomizedPointTheme(points, false);
 
         // create label style
         Paint textStyle = new Paint();
@@ -103,17 +105,17 @@ public class MainActivity extends Activity {
 
         // set some visual options for the overlay
         // we use here MAXIMUM_OPTIMIZATION algorithm, which works well with >100k points
-        SimpleFastPointOverlayOptions opt = SimpleFastPointOverlayOptions.getDefaultStyle()
-                .setAlgorithm(SimpleFastPointOverlayOptions.RenderingAlgorithm.MAXIMUM_OPTIMIZATION)
+        CustomizedFastPointOverlayOptions opt = CustomizedFastPointOverlayOptions.getDefaultStyle()
+                .setAlgorithm(CustomizedFastPointOverlayOptions.RenderingAlgorithm.MAXIMUM_OPTIMIZATION)
                 .setRadius(15).setIsClickable(true).setCellSize(30).setTextStyle(textStyle);
 
         // create the overlay with the theme
-        final SimpleFastPointOverlay sfpo = new SimpleFastPointOverlay(pt, opt);
+        final CustomizedFastPointOverlay sfpo = new CustomizedFastPointOverlay(pt, opt, getApplicationContext());
 
         // onClick callback
-        sfpo.setOnClickListener(new SimpleFastPointOverlay.OnClickListener() {
+        sfpo.setOnClickListener(new CustomizedFastPointOverlay.OnClickListener() {
             @Override
-            public void onClick(final SimpleFastPointOverlay.PointAdapter points, final Integer point) {
+            public void onClick(final CustomizedFastPointOverlay.PointAdapter points, final Integer point) {
 
                 final String[] types = {"Public Message", "Private Message", "Cancel"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
