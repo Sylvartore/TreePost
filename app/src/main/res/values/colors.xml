@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="edit_post_background">#ffffff</color>
+    <color name="animation_start">@color/colorPrimary</color>
+    <color name="animation_end">#FFFFFF</color>
 </resources>
