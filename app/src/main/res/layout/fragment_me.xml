@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#eee">
+    android:background="@color/app_background">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/user_profile_layout"
@@ -35,7 +35,7 @@
             android:layout_height="36dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="48dp"
-            android:text="Planters"
+            android:text="@string/nickname_placeholder"
             android:textColor="#000"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -46,7 +46,7 @@
             android:id="@+id/user_profile_email_tv"
             android:layout_width="189dp"
             android:layout_height="21dp"
-            android:text="plantersdev@gmail.com"
+            android:text="@string/email_placeholder"
             app:layout_constraintStart_toStartOf="@+id/user_profile_name_tv"
             app:layout_constraintTop_toBottomOf="@+id/user_profile_name_tv" />
 
@@ -183,25 +183,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="horizontal"
-        android:background="@drawable/white_gb_with_bottom_border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/logout_btn"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textSize="20sp"
-            android:textColor="#F55"
-            android:background="@color/fui_transparent"
-            android:text="@string/logout_btn" />
-
-    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

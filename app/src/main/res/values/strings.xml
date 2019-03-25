@@ -13,4 +13,12 @@
     <string name="my_public_msg_label">My Public Messages</string>
     <string name="my_private_msg_label">My Private Messages</string>
     <string name="setting_label">Settings</string>
+    <string name="avatar_label">Avatar</string>
+    <string name="nickname_label">Nick Name</string>
+    <string name="nickname_placeholder">Planters</string>
+    <string name="more_label">More</string>
+    <string name="email_label">Email</string>
+    <string name="email_placeholder">plantersdev@gmail.com</string>
+    <string name="personal_info_page_title">Account Info</string>
+    <string name="save_btn">Save</string>
 </resources>

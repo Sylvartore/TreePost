@@ -1,6 +1,7 @@
 package ca.bcit.planters.treepost;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -8,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 public class MeFragment extends Fragment {
 
@@ -33,6 +35,16 @@ public class MeFragment extends Fragment {
 //                ContextCompat.getColor(getActivity(), R.color.animation_start),
 //                ContextCompat.getColor(getActivity(), R.color.animation_end)
 //        );
+
+        ImageButton userProfileBtn = rootView.findViewById(R.id.user_profile_btn);
+        userProfileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), UserProfileActivity.class);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in_from_right, R.anim.slide_out_to_left);
+            }
+        });
         return rootView;
 
     }
