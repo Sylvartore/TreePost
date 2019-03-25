@@ -168,17 +168,20 @@ public class TreepostFragment extends Fragment {
                     String id = pt.getLatitude() + "_"+ pt.getLongitude();
                     id = id.replace('.', '*');
                     DataSnapshot ds = dataSnapshot.child("trees").child(id).child("publicMsg");
+                    if (ds.getChildrenCount() != 0)
+                        it.setMarker(colTree);
 
-                    for (DataSnapshot dsOwner : ds.getChildren()) {
-                        try {
-                            Message msg = dsOwner.getValue(Message.class);
-                            if (email.equals(msg.getOwnerEmail())) {
-                                it.setMarker(colTree);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
+                   // for (DataSnapshot dsOwner : ds.getChildren()) {
+                    //    it.setMarker(colTree);
+//                        try {
+//                            Message msg = dsOwner.getValue(Message.class);
+//                            if (email.equals(msg.getOwnerEmail())) {
+//                                it.setMarker(colTree);
+//                            }
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+                    //}
                 }
             }
 
