@@ -9,6 +9,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class UserProfileActivity extends AppCompatActivity {
 
     ImageButton nick_name_edit_btn;
@@ -27,6 +29,15 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(UserProfileActivity.this, ChangeNicknameActivity.class));
+            }
+        });
+        findViewById(R.id.logout_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(UserProfileActivity.this, FirebaseUIActivity.class));
+                Toast.makeText(UserProfileActivity.this,
+                        "Logged Out", Toast.LENGTH_SHORT).show();
             }
         });
         nick_name_tv = findViewById(R.id.profile_nickname_tv);
