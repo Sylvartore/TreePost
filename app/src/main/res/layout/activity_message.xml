@@ -52,7 +52,7 @@
                         app:layout_constraintTop_toTopOf="@+id/msg_user_avatar" />
                 </android.support.constraint.ConstraintLayout>
 
-                <EditText
+                <TextView
                     android:id="@+id/msg_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -63,7 +63,6 @@
                     android:background="@color/fui_transparent"
                     android:ems="10"
                     android:gravity="center"
-                    android:inputType="textMultiLine"
                     android:minHeight="@dimen/msg_min_height" />
 
                 <TextView
