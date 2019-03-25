@@ -12,4 +12,8 @@ public class User {
         this.email = email;
         this.nickname = nickname;
     }
+
+    void SetNickName(String nickname) {
+        this.nickname = nickname;
+    }
 }

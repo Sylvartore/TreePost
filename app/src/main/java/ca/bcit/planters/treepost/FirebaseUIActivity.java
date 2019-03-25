@@ -92,7 +92,7 @@ public class FirebaseUIActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             currentUser = new User(user.getUid(), user.getEmail(), user.getDisplayName());
-                            Toast.makeText(FirebaseUIActivity.this, "Logged In.",
+                            Toast.makeText(FirebaseUIActivity.this, "Hello " + user.getDisplayName(),
                                     Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(FirebaseUIActivity.this, MainActivity.class);
                             intent.putExtra("email", user.getEmail());

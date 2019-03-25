@@ -10,11 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class MeFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    TextView nickname;
+    TextView email;
     public MeFragment() {
         // Required empty public constructor
     }
@@ -45,6 +49,11 @@ public class MeFragment extends Fragment {
                 getActivity().overridePendingTransition(R.anim.slide_in_from_right, R.anim.slide_out_to_left);
             }
         });
+
+        nickname = rootView.findViewById(R.id.user_profile_name_tv);
+        email = rootView.findViewById(R.id.user_profile_email_tv);
+        nickname.setText(FirebaseUIActivity.currentUser.nickname);
+        email.setText(FirebaseUIActivity.currentUser.email);
         return rootView;
 
     }
@@ -72,6 +81,12 @@ public class MeFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        nickname.setText(FirebaseUIActivity.currentUser.nickname);
     }
 
 }

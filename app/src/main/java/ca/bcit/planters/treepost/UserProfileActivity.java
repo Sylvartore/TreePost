@@ -7,11 +7,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class UserProfileActivity extends AppCompatActivity {
 
     ImageButton nick_name_edit_btn;
     TextView nick_name_tv;
+    TextView email_tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +29,10 @@ public class UserProfileActivity extends AppCompatActivity {
                 startActivity(new Intent(UserProfileActivity.this, ChangeNicknameActivity.class));
             }
         });
+        nick_name_tv = findViewById(R.id.profile_nickname_tv);
+        email_tv = findViewById(R.id.profile_email_tv);
         nick_name_tv.setText(FirebaseUIActivity.currentUser.nickname);
+        email_tv.setText((FirebaseUIActivity.currentUser.email));
     }
 
     @Override
@@ -39,5 +44,11 @@ public class UserProfileActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         onBackPressed();
         return true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        nick_name_tv.setText(FirebaseUIActivity.currentUser.nickname);
     }
 }
