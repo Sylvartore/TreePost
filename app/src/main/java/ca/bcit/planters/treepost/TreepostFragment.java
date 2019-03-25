@@ -21,12 +21,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.config.Configuration;
@@ -52,12 +57,16 @@ public class TreepostFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private static final int REQUEST_CODE = 10;
     MapView map = null;
+    com.google.firebase.database.DatabaseReference myRef = com.google.firebase.database.FirebaseDatabase.getInstance().getReference();
     Drawable bwTree = null;
+    Drawable colTree = null;
+    private String email;
 
     public TreepostFragment() {
         // Required empty public constructor
     }
 
+    /*
     class PopulateIcon extends AsyncTask<OverlayItem, Void, Void> {
         @Override
         public Void doInBackground(OverlayItem... items){
@@ -66,10 +75,12 @@ public class TreepostFragment extends Fragment {
             return null;
         }
     }
+    */
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        email = getActivity().getIntent().getStringExtra("email");
     }
 
     @Override
@@ -95,7 +106,7 @@ public class TreepostFragment extends Fragment {
         GeoPoint gPt = new GeoPoint(49.2057, -122.911); // for New West: 49.2057, -122.9110
         mMapController.setCenter(gPt);
 
-        List<IGeoPoint> points = new ArrayList<>(); List<OverlayItem> items = new ArrayList<>();
+        final List<OverlayItem> items = new ArrayList<>();
 
         List<String[]> list = new ArrayList<>();
         try {
@@ -124,27 +135,58 @@ public class TreepostFragment extends Fragment {
             throw new RuntimeException("Error reading csv files");
         }
 
-        Bitmap b = ((BitmapDrawable)getActivity().getDrawable(R.drawable.col)).getBitmap();
+        Bitmap b = ((BitmapDrawable)getActivity().getDrawable(R.drawable.bw)).getBitmap();
         Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 100, 100, false);
         bwTree = new BitmapDrawable(getResources(), bitmapResized);
+        Bitmap bcol = ((BitmapDrawable)getActivity().getDrawable(R.drawable.col)).getBitmap();
+        Bitmap bitmapResizedcol = Bitmap.createScaledBitmap(bcol, 100, 100, false);
+        colTree = new BitmapDrawable(getResources(), bitmapResizedcol);
 
         for (String[] row : list) {
             if (!row[3].equals("")) {
                 double latitude = Double.parseDouble(row[7]);
                 double longitude = Double.parseDouble(row[6]);
                 IGeoPoint point = new LabelledGeoPoint(latitude, longitude, row[3]);
-                points.add(point);
-
 
                 final OverlayItem overlayItem = new OverlayItem("", "", point);
 
                 overlayItem.setMarker(new ColorDrawable(Color.TRANSPARENT));
-                new TreepostFragment.PopulateIcon().execute(overlayItem);
+                // new TreepostFragment.PopulateIcon().execute(overlayItem);
+
+                overlayItem.setMarker(bwTree);
                 items.add(overlayItem);
 
             }
         }
 
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //String currentUser = getActivity().getIntent().getStringExtra("email");
+                for (OverlayItem it : items) {
+                    IGeoPoint pt = it.getPoint();
+                    String id = pt.getLatitude() + "_"+ pt.getLongitude();
+                    id = id.replace('.', '*');
+                    DataSnapshot ds = dataSnapshot.child("trees").child(id).child("publicMsg");
+
+                    for (DataSnapshot dsOwner : ds.getChildren()) {
+                        try {
+                            Message msg = dsOwner.getValue(Message.class);
+                            if (email.equals(msg.getOwnerEmail())) {
+                                it.setMarker(colTree);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         Overlay overlay = new ItemizedOverlayWithFocus<>(this.getActivity().getApplicationContext(), items,
                 new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
