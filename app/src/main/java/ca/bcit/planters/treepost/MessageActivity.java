@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -92,7 +93,8 @@ public class MessageActivity extends AppCompatActivity {
                     replyMessageList.add(reply);
                 }
                 Log.d(TAG, "onDataChange: " + (replyMessageList.size() == 0 ? 0 : replyMessageList.get(replyMessageList.size() - 1).content));
-                msgDate.setText(message.timeStamp.toString());
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                msgDate.setText(format.format(message.timeStamp));
                 adapter.notifyDataSetChanged();
             }
 

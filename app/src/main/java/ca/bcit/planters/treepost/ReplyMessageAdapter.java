@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class ReplyMessageAdapter extends RecyclerView.Adapter<ReplyMessageAdapter.MyReplyViewHolder> {
@@ -44,10 +46,11 @@ public class ReplyMessageAdapter extends RecyclerView.Adapter<ReplyMessageAdapte
     @Override
     public void onBindViewHolder(final ReplyMessageAdapter.MyReplyViewHolder holder, int position) {
         Message message = messageList.get(position);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         holder.currentMsg = message;
         holder.content.setText(message.content);
-        holder.date.setText(message.timeStamp.toString());
-        holder.userName.setText(message.owner.email);
+        holder.date.setText(format.format(message.timeStamp));
+        holder.userName.setText(message.owner.nickname);
         holder.userName.setOnLongClickListener(new AddFriendListener(message.owner,mContext));
         holder.userAvatar.setOnLongClickListener(new AddFriendListener(message.owner,mContext));
     }
