@@ -48,9 +48,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:layout_toStartOf="@+id/btn_new_pub_msg"
-            android:background="@color/fui_transparent"
+            android:background="@drawable/input_background"
             android:ems="10"
             android:hint="@string/edit_msg_hint"
             android:inputType="text" />
