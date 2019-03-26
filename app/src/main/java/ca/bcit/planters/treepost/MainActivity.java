@@ -24,7 +24,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        viewFragment( new TreepostFragment());
+        viewFragment( new TreepostFragment(), FRAGMENT_NORMAL);
 
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -32,7 +32,7 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_treepost:
-                        viewFragment(new TreepostFragment());
+                        viewFragment(new TreepostFragment(), FRAGMENT_NORMAL);
                         return true;
                     case R.id.navigation_contacts:
                         viewFragment(new ContactFragment(), FRAGMENT_NORMAL);

@@ -82,7 +82,7 @@ public class MessageActivity extends AppCompatActivity {
                 // whenever data at this location is updated.
                 message = dataSnapshot.child("trees").child(treeId).child(msgType).child(msgId).getValue(Message.class);
                 msgContent.setText(message.content);
-                msgUserName.setText(message.owner.email);
+                msgUserName.setText(message.owner.nickname);
                 msgUserName.requestFocus();
                 msgUserName.setOnLongClickListener(new AddFriendListener(message.owner, MessageActivity.this));
                 msgUserAvatar.setOnLongClickListener(new AddFriendListener(message.owner, MessageActivity.this));

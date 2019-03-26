@@ -8,7 +8,7 @@
     <string name="user_avatar">User Avatar</string>
     <string name="title_treepost">Tree Post</string>
     <string name="title_contacts">Contacts</string>
-    <string name="title_me">Me</string>
+    <string name="title_me">Profile</string>
     <string name="logout_btn">Log Out</string>
     <string name="my_public_msg_label">My Public Messages</string>
     <string name="my_private_msg_label">My Private Messages</string>

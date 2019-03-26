@@ -1,10 +1,12 @@
 package ca.bcit.planters.treepost;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.google.firebase.database.DataSnapshot;
@@ -66,6 +68,11 @@ public class EditMessageActivity extends AppCompatActivity {
                 childUpdates.put("/trees/" + treeId + "/" + msgType + "/" + msgId, msgValues);
                 myRef.updateChildren(childUpdates);
                 onBackPressed();
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
     }
