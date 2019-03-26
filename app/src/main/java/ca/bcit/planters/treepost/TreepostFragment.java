@@ -2,6 +2,7 @@ package ca.bcit.planters.treepost;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,14 +17,11 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,13 +96,7 @@ public class TreepostFragment extends Fragment {
         Configuration.getInstance().load(getActivity(), PreferenceManager.getDefaultSharedPreferences(getContext()));
         map = rootView.findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
-
         getLocation();
-
-        MapController mMapController = (MapController) map.getController();
-        mMapController.setZoom(5);
-        GeoPoint gPt = new GeoPoint(49.2057, -122.911); // for New West: 49.2057, -122.9110
-        mMapController.setCenter(gPt);
 
         final List<OverlayItem> items = new ArrayList<>();
 
@@ -135,10 +127,10 @@ public class TreepostFragment extends Fragment {
             throw new RuntimeException("Error reading csv files");
         }
 
-        Bitmap b = ((BitmapDrawable)getActivity().getDrawable(R.drawable.bw)).getBitmap();
+        Bitmap b = ((BitmapDrawable) getActivity().getDrawable(R.drawable.bw)).getBitmap();
         Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 100, 100, false);
         bwTree = new BitmapDrawable(getResources(), bitmapResized);
-        Bitmap bcol = ((BitmapDrawable)getActivity().getDrawable(R.drawable.col)).getBitmap();
+        Bitmap bcol = ((BitmapDrawable) getActivity().getDrawable(R.drawable.col)).getBitmap();
         Bitmap bitmapResizedcol = Bitmap.createScaledBitmap(bcol, 100, 100, false);
         colTree = new BitmapDrawable(getResources(), bitmapResizedcol);
 
@@ -165,13 +157,13 @@ public class TreepostFragment extends Fragment {
                 //String currentUser = getActivity().getIntent().getStringExtra("email");
                 for (OverlayItem it : items) {
                     IGeoPoint pt = it.getPoint();
-                    String id = pt.getLatitude() + "_"+ pt.getLongitude();
+                    String id = pt.getLatitude() + "_" + pt.getLongitude();
                     id = id.replace('.', '*');
                     DataSnapshot ds = dataSnapshot.child("trees").child(id).child("publicMsg");
                     if (ds.getChildrenCount() != 0)
                         it.setMarker(colTree);
 
-                   // for (DataSnapshot dsOwner : ds.getChildren()) {
+                    // for (DataSnapshot dsOwner : ds.getChildren()) {
                     //    it.setMarker(colTree);
 //                        try {
 //                            Message msg = dsOwner.getValue(Message.class);
@@ -223,7 +215,6 @@ public class TreepostFragment extends Fragment {
                 });
         map.getOverlays().add(overlay);
         map.invalidate();
-
         return rootView;
 
     }
@@ -297,7 +288,7 @@ public class TreepostFragment extends Fragment {
                 double longitude = location.getLongitude();
 
                 MapController mMapController = (MapController) map.getController();
-                mMapController.setZoom(15);
+                mMapController.setZoom(20);
                 GeoPoint gPt = new GeoPoint(latitude, longitude); // for New West: 49.2057, -122.9110
                 mMapController.setCenter(gPt);
             }

@@ -25,6 +25,8 @@ public class MainActivity extends Activity implements OnFragmentInteractionListe
         setContentView(R.layout.activity_main);
 
         viewFragment( new TreepostFragment(), FRAGMENT_NORMAL);
+        viewFragment(new Fragment(), FRAGMENT_NORMAL);
+        viewFragment( new TreepostFragment(), FRAGMENT_NORMAL);
 
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
