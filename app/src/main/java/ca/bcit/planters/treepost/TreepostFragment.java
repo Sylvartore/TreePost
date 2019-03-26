@@ -96,6 +96,10 @@ public class TreepostFragment extends Fragment {
         Configuration.getInstance().load(getActivity(), PreferenceManager.getDefaultSharedPreferences(getContext()));
         map = rootView.findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
+        MapController mMapController = (MapController) map.getController();
+        GeoPoint gPt = new GeoPoint(49.2057, -122.911); // for New West: 49.2057, -122.9110
+        mMapController.setCenter(gPt);
+        mMapController.setZoom(20);
         getLocation();
 
         final List<OverlayItem> items = new ArrayList<>();
