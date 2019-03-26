@@ -16,4 +16,8 @@ public class User {
     void SetNickName(String nickname) {
         this.nickname = nickname;
     }
+
+    public String toString() {
+        return nickname;
+    }
 }

@@ -78,7 +78,7 @@ public class TreepostFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        email = getActivity().getIntent().getStringExtra("email");
+        //email = getActivity().getIntent().getStringExtra("email");
     }
 
     @Override
@@ -142,7 +142,7 @@ public class TreepostFragment extends Fragment {
 
                 final OverlayItem overlayItem = new OverlayItem("", "", point);
 
-                overlayItem.setMarker(new ColorDrawable(Color.TRANSPARENT));
+                // overlayItem.setMarker(new ColorDrawable(Color.TRANSPARENT));
                 // new TreepostFragment.PopulateIcon().execute(overlayItem);
 
                 overlayItem.setMarker(bwTree);

@@ -1,6 +1,7 @@
 package ca.bcit.planters.treepost;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -56,15 +58,15 @@ public class MessageActivity extends AppCompatActivity {
         treeId = (String) getIntent().getExtras().get("treeId");
         msgType = (String) getIntent().getExtras().get("msgType");
         msgContent = findViewById(R.id.msg_content);
-        msgContent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        msgContent.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    message.content = msgContent.getText().toString();
-                    Map<String, Object> msgValues = message.toMap();
-                    Map<String, Object> childUpdates = new HashMap<>();
-                    childUpdates.put("/trees/" + treeId + "/" + msgType + "/" + msgId, msgValues);
-                    myRef.updateChildren(childUpdates);
+            public void onClick(View v) {
+                if (FirebaseUIActivity.currentUser.userId.equals(message.owner.userId)){
+                    Intent intent = new Intent(MessageActivity.this, EditMessageActivity.class);
+                    intent.putExtra("treeId", treeId);
+                    intent.putExtra("msgId", msgId);
+                    intent.putExtra("msgType", msgType);
+                    startActivity(intent);
                 }
             }
         });
@@ -80,8 +82,7 @@ public class MessageActivity extends AppCompatActivity {
                 // whenever data at this location is updated.
                 message = dataSnapshot.child("trees").child(treeId).child(msgType).child(msgId).getValue(Message.class);
                 msgContent.setText(message.content);
-                msgContent.setFocusable(FirebaseUIActivity.currentUser.userId.equals(message.owner.userId));
-                msgUserName.setText(message.owner.email);
+                msgUserName.setText(message.owner.nickname);
                 msgUserName.requestFocus();
                 msgUserName.setOnLongClickListener(new AddFriendListener(message.owner, MessageActivity.this));
                 msgUserAvatar.setOnLongClickListener(new AddFriendListener(message.owner, MessageActivity.this));
