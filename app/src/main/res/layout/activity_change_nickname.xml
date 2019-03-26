@@ -43,7 +43,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/save_btn"
-            android:background="@color/fui_transparent"
+            android:background="@color/colorPrimary"
+            android:textColor="#fff"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
