@@ -278,7 +278,7 @@ public class TreepostFragment extends Fragment {
 
                 MapController mMapController = (MapController) map.getController();
                 mMapController.setZoom(20);                                                             // for downtown 49.2825242,-123.1137563
-                GeoPoint gPt = new GeoPoint(latitude - 0.0768, longitude + 0.2027); // for New West: 49.2057, -122.9110
+                GeoPoint gPt = new GeoPoint(latitude - 0.0779, longitude + 0.2044); // for New West: 49.2057, -122.9110
                 mMapController.setCenter(gPt);
             }
 
@@ -295,7 +295,7 @@ public class TreepostFragment extends Fragment {
             }
         };
 
-        locationManager.requestLocationUpdates(provider, 10000, 10, locationListener);
+        locationManager.requestLocationUpdates(provider, 1000, 1, locationListener);
     }
 
 }
