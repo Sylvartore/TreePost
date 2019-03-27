@@ -64,9 +64,7 @@
                         android:id="@+id/msg_content_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/msg_margin_horizontal"
                         android:layout_marginTop="@dimen/msg_margin_top"
-                        android:layout_marginEnd="@dimen/msg_margin_horizontal"
                         android:layout_marginBottom="@dimen/msg_margin_bottom"
                         android:minHeight="@dimen/msg_min_height">
 
