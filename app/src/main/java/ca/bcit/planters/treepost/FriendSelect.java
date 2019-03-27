@@ -62,7 +62,7 @@ public class FriendSelect extends ListActivity {
                         String email = friendList.get(i);
                         String userId = friendMap.get(email);
                         Message newMsg = new Message(key, new Date(), FirebaseUIActivity.currentUser, msg);
-                        newMsg.receiver = new User(userId, email, "friend");
+                        newMsg.receiver = new User(userId, email, email.split("@")[0]);
                         Map<String, Object> msgValues = newMsg.toMap();
                         Map<String, Object> childUpdates = new HashMap<>();
                         childUpdates.put("/trees/" + treeId + "/privateMsg/" + key, msgValues);
