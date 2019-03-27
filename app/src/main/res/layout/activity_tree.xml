@@ -40,8 +40,7 @@
             android:layout_alignParentEnd="true"
             android:background="@color/colorAccent"
             android:textColor="#fff"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:textSize="18sp"
             android:text="@string/btn_post" />
 
         <EditText

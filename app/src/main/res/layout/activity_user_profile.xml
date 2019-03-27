@@ -10,7 +10,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/profile_avatar_layout"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="80dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/white_gb_with_bottom_border">
@@ -22,7 +22,7 @@
             android:layout_marginStart="32dp"
             android:text="@string/avatar_label"
             android:textColor="#000"
-            android:textSize="20sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -45,6 +45,7 @@
             android:background="@color/fui_transparent"
             android:paddingTop="30dp"
             android:paddingBottom="30dp"
+            android:paddingEnd="10dp"
             android:scaleType="fitEnd"
             android:src="@drawable/right_arrow"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -58,7 +59,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/profile_nickname_layout"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:background="@drawable/white_gb_with_bottom_border"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_avatar_layout">
@@ -71,6 +72,7 @@
             android:background="@color/fui_transparent"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
+            android:paddingEnd="10dp"
             android:scaleType="fitEnd"
             android:src="@drawable/right_arrow"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -87,7 +89,7 @@
             android:layout_marginStart="30dp"
             android:text="@string/nickname_label"
             android:textColor="#000"
-            android:textSize="20sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -98,7 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="40dp"
             android:text="@string/nickname_placeholder"
-            android:textSize="18sp"
+            android:textSize="12sp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -108,7 +110,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/profile_email_layout"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:background="@drawable/white_gb_with_bottom_border"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_nickname_layout">
@@ -120,7 +122,7 @@
             android:layout_marginStart="30dp"
             android:text="@string/email_label"
             android:textColor="#000"
-            android:textSize="20sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -131,7 +133,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="40dp"
             android:text="@string/email_placeholder"
-            android:textSize="18sp"
+            android:textSize="12sp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -141,7 +143,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/profile_more_layout"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:background="@drawable/white_gb_with_bottom_border"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_email_layout">
@@ -153,7 +155,7 @@
             android:layout_marginStart="30dp"
             android:text="@string/more_label"
             android:textColor="#000"
-            android:textSize="20sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -166,6 +168,7 @@
             android:background="@color/fui_transparent"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
+            android:paddingEnd="10dp"
             android:scaleType="fitEnd"
             android:src="@drawable/right_arrow"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -179,7 +182,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:layout_marginBottom="40dp"
         android:background="@drawable/white_gb_with_bottom_border"
         android:orientation="horizontal"
@@ -194,7 +197,7 @@
             android:background="@color/fui_transparent"
             android:text="@string/logout_btn"
             android:textColor="#F55"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
