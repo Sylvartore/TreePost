@@ -41,7 +41,12 @@ public class Message {
     public String getOwnerEmail() {
         if (owner != null)
             return owner.email;
-        else
-            return null;
+        return null;
+    }
+
+    public String getReceiverEmail() {
+        if (receiver != null)
+            return receiver.email;
+        return null;
     }
 }

@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.firebase.ui.auth.AuthUI.TAG;
+
 public class TreepostFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
@@ -58,7 +61,7 @@ public class TreepostFragment extends Fragment {
     com.google.firebase.database.DatabaseReference myRef = com.google.firebase.database.FirebaseDatabase.getInstance().getReference();
     Drawable bwTree = null;
     Drawable colTree = null;
-    private String email;
+    Drawable pTree = null;
 
     public TreepostFragment() {
         // Required empty public constructor
@@ -131,12 +134,15 @@ public class TreepostFragment extends Fragment {
             throw new RuntimeException("Error reading csv files");
         }
 
-        Bitmap b = ((BitmapDrawable) getActivity().getDrawable(R.drawable.bw)).getBitmap();
+        Bitmap b = ((BitmapDrawable) getActivity().getDrawable(R.drawable.tree)).getBitmap();
         Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 100, 100, false);
         bwTree = new BitmapDrawable(getResources(), bitmapResized);
-        Bitmap bcol = ((BitmapDrawable) getActivity().getDrawable(R.drawable.col)).getBitmap();
+        Bitmap bcol = ((BitmapDrawable) getActivity().getDrawable(R.drawable.tree_with_msg)).getBitmap();
         Bitmap bitmapResizedcol = Bitmap.createScaledBitmap(bcol, 100, 100, false);
         colTree = new BitmapDrawable(getResources(), bitmapResizedcol);
+        Bitmap bp = ((BitmapDrawable) getActivity().getDrawable(R.drawable.tree_with_pm2)).getBitmap();
+        Bitmap bitmapResizedp = Bitmap.createScaledBitmap(bp, 100, 100, false);
+        pTree = new BitmapDrawable(getResources(), bitmapResizedp);
 
         for (String[] row : list) {
             if (!row[3].equals("")) {
@@ -145,9 +151,6 @@ public class TreepostFragment extends Fragment {
                 IGeoPoint point = new LabelledGeoPoint(latitude, longitude, row[3]);
 
                 final OverlayItem overlayItem = new OverlayItem("", "", point);
-
-                // overlayItem.setMarker(new ColorDrawable(Color.TRANSPARENT));
-                // new TreepostFragment.PopulateIcon().execute(overlayItem);
 
                 overlayItem.setMarker(bwTree);
                 items.add(overlayItem);
@@ -167,17 +170,18 @@ public class TreepostFragment extends Fragment {
                     if (ds.getChildrenCount() != 0)
                         it.setMarker(colTree);
 
-                    // for (DataSnapshot dsOwner : ds.getChildren()) {
-                    //    it.setMarker(colTree);
-//                        try {
-//                            Message msg = dsOwner.getValue(Message.class);
-//                            if (email.equals(msg.getOwnerEmail())) {
-//                                it.setMarker(colTree);
-//                            }
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-                    //}
+                    ds = dataSnapshot.child("trees").child(id).child("privateMsg");
+                    for (DataSnapshot dsOwner : ds.getChildren()) {
+                        try {
+                            Message msg = dsOwner.getValue(Message.class);
+                            if (FirebaseUIActivity.currentUser.email.equals(msg.getReceiverEmail())
+                            || FirebaseUIActivity.currentUser.email.equals(msg.getOwnerEmail())) {
+                                it.setMarker(pTree);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
 
