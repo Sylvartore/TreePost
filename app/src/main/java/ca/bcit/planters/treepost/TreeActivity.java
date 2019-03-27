@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -22,23 +21,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public class TreeActivity extends AppCompatActivity {
 
     private static final String TAG = "TreeActivity";
 
-    private boolean isPrivateMsg;
-    private String msgType;
     private String treeId;
     private EditText editNewPubMsg;
 
     private RecyclerView recyclerView;
     private MessageAdapter adapter;
     private List<Message> messageList;
+    private Set<String> privateMsg;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
@@ -50,6 +47,7 @@ public class TreeActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         recyclerView = findViewById(R.id.recycler_view);
         messageList = new ArrayList<>();
+        privateMsg = new HashSet<>();
         adapter = new MessageAdapter(this, messageList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -60,9 +58,11 @@ public class TreeActivity extends AppCompatActivity {
             @Override
             public void onItemClick(int position) {
                 Intent intent = new Intent(TreeActivity.this, MessageActivity.class);
-                intent.putExtra("msgId", messageList.get(position).msgId);
+                String msgId = messageList.get(position).msgId;
+                intent.putExtra("msgId", msgId);
                 intent.putExtra("treeId", treeId);
-                intent.putExtra("msgType",msgType);
+                String msgType = privateMsg.contains(msgId) ? "privateMsg" : "publicMsg";
+                intent.putExtra("msgType", msgType);
                 startActivity(intent);
             }
         });
@@ -97,11 +97,6 @@ public class TreeActivity extends AppCompatActivity {
 
         recyclerView.addOnItemTouchListener(swipeTouchListener);
         treeId = getIntent().getExtras().get("id").toString();
-        String type = getIntent().getExtras().get("type").toString();
-        ((TextView) findViewById(R.id.label_msg_type)).setText(type);
-        isPrivateMsg = "Private Message".equals(type);
-        msgType = isPrivateMsg ? "privateMsg" : "publicMsg";
-
         editNewPubMsg = findViewById(R.id.edit_new_pub_msg);
         editNewPubMsg.bringToFront();
         Button btnPostNewPubMsg = findViewById(R.id.btn_new_pub_msg);
@@ -117,24 +112,13 @@ public class TreeActivity extends AppCompatActivity {
                 inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
 
-                String key = myRef.child("trees").child(treeId).child(msgType).push().getKey();
                 String msg = editNewPubMsg.getText().toString();
 
-                if (isPrivateMsg) {
-                    Intent intent = new Intent(TreeActivity.this, FriendSelect.class);
-                    intent.putExtra("key", key);
-                    intent.putExtra("msg", msg);
-                    intent.putExtra("treeId", treeId);
-                    startActivity(intent);
-                    return;
-                }
-
-                Message newMsg = new Message(key, new Date(), FirebaseUIActivity.currentUser, msg);
-                Map<String, Object> msgValues = newMsg.toMap();
-                Map<String, Object> childUpdates = new HashMap<>();
-                childUpdates.put("/trees/" + treeId + "/publicMsg/" + key, msgValues);
-                myRef.updateChildren(childUpdates);
+                Intent intent = new Intent(TreeActivity.this, FriendSelect.class);
+                intent.putExtra("msg", msg);
+                intent.putExtra("treeId", treeId);
                 editNewPubMsg.setText("");
+                startActivity(intent);
             }
         });
         myRef.addValueEventListener(new ValueEventListener() {
@@ -154,18 +138,26 @@ public class TreeActivity extends AppCompatActivity {
     }
 
     public void DeleteMsg(String msgId) {
-        myRef.child("trees").child(treeId).child(msgType).child(msgId).removeValue();
+        if (privateMsg.contains(msgId)) {
+            myRef.child("trees").child(treeId).child("privateMsg").child(msgId).removeValue();
+        } else {
+            myRef.child("trees").child(treeId).child("publicMsg").child(msgId).removeValue();
+        }
     }
 
     private void ShowMsg(DataSnapshot dataSnapshot) {
         messageList.clear();
-        for (DataSnapshot ds : dataSnapshot.child("trees").child(treeId).child(msgType).getChildren()) {
+        privateMsg.clear();
+        for (DataSnapshot ds : dataSnapshot.child("trees").child(treeId).child("privateMsg").getChildren()) {
             Message msg = ds.getValue(Message.class);
             String curId = FirebaseUIActivity.currentUser.userId;
-            if (isPrivateMsg && msg != null) {
-                if (!msg.owner.userId.equals(curId) && !msg.receiver.userId.equals(curId))
-                    continue;
-            }
+            if (msg == null) continue;
+            if (!msg.owner.userId.equals(curId) && !msg.receiver.userId.equals(curId)) continue;
+            messageList.add(msg);
+            privateMsg.add(msg.msgId);
+        }
+        for (DataSnapshot ds : dataSnapshot.child("trees").child(treeId).child("publicMsg").getChildren()) {
+            Message msg = ds.getValue(Message.class);
             messageList.add(msg);
         }
         adapter.notifyDataSetChanged();

@@ -1,16 +1,12 @@
 package ca.bcit.planters.treepost;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -22,7 +18,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,8 +45,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.firebase.ui.auth.AuthUI.TAG;
 
 public class TreepostFragment extends Fragment {
 
@@ -175,7 +168,7 @@ public class TreepostFragment extends Fragment {
                         try {
                             Message msg = dsOwner.getValue(Message.class);
                             if (FirebaseUIActivity.currentUser.email.equals(msg.getReceiverEmail())
-                            || FirebaseUIActivity.currentUser.email.equals(msg.getOwnerEmail())) {
+                                    || FirebaseUIActivity.currentUser.email.equals(msg.getOwnerEmail())) {
                                 it.setMarker(pTree);
                             }
                         } catch (Exception e) {
@@ -196,23 +189,11 @@ public class TreepostFragment extends Fragment {
 
                     @Override
                     public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
-                        final String[] types = {"Public Message", "Private Message", "Cancel"};
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setTitle("Select message type to view");
-                        builder.setItems(types, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (which != 2) {
-                                    IGeoPoint clicked = item.getPoint();
-                                    String treeId = clicked.getLatitude() + "_" + clicked.getLongitude();
-                                    Intent intent = new Intent(getActivity(), TreeActivity.class);
-                                    intent.putExtra("type", types[which]);
-                                    intent.putExtra("id", treeId.replace('.', '*'));
-                                    startActivity(intent);
-                                }
-                            }
-                        });
-                        builder.show();
+                        IGeoPoint clicked = item.getPoint();
+                        String treeId = clicked.getLatitude() + "_" + clicked.getLongitude();
+                        Intent intent = new Intent(getActivity(), TreeActivity.class);
+                        intent.putExtra("id", treeId.replace('.', '*'));
+                        startActivity(intent);
                         return true;
                     }
 

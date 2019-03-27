@@ -32,7 +32,7 @@ public class FriendSelect extends ListActivity {
 
         final Map<String, String> friendMap = new HashMap<>();
         final List<String> friendList = new ArrayList<>();
-        final String key = getIntent().getExtras().get("key").toString();
+        friendList.add("to Public");
         final String msg = getIntent().getExtras().get("msg").toString();
         final String treeId = getIntent().getExtras().get("treeId").toString();
 
@@ -44,29 +44,34 @@ public class FriendSelect extends ListActivity {
                         String email = ds.getValue().toString();
                         String userId = ds.getKey();
                         friendMap.put(email, userId);
-                        friendList.add(email);
+                        friendList.add("to " + email);
                     }
                 }
-                if (friendList.isEmpty()) {
-                    Toast.makeText(FriendSelect.this, "Add a friend first", Toast.LENGTH_SHORT).show();
-                    finish();
-                    return;
-                }
-                Toast.makeText(FriendSelect.this, "Please select a friend to send", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FriendSelect.this, "Please select a friend or send as a public message", Toast.LENGTH_SHORT).show();
                 getListView().setAdapter(new ArrayAdapter<>(
                         FriendSelect.this, android.R.layout.simple_list_item_1, friendList));
 
                 getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        String email = friendList.get(i);
-                        String userId = friendMap.get(email);
-                        Message newMsg = new Message(key, new Date(), FirebaseUIActivity.currentUser, msg);
-                        newMsg.receiver = new User(userId, email, email.split("@")[0]);
-                        Map<String, Object> msgValues = newMsg.toMap();
-                        Map<String, Object> childUpdates = new HashMap<>();
-                        childUpdates.put("/trees/" + treeId + "/privateMsg/" + key, msgValues);
-                        myRef.updateChildren(childUpdates);
+                        if (i == 0) {
+                            String key = myRef.child("trees").child(treeId).child("publicMsg").push().getKey();
+                            Message newMsg = new Message(key, new Date(), FirebaseUIActivity.currentUser, msg);
+                            Map<String, Object> msgValues = newMsg.toMap();
+                            Map<String, Object> childUpdates = new HashMap<>();
+                            childUpdates.put("/trees/" + treeId + "/publicMsg/" + key, msgValues);
+                            myRef.updateChildren(childUpdates);
+                        } else {
+                            String email = friendList.get(i).substring(3);
+                            String userId = friendMap.get(email);
+                            String key = myRef.child("trees").child(treeId).child("privateMsg").push().getKey();
+                            Message newMsg = new Message(key, new Date(), FirebaseUIActivity.currentUser, msg);
+                            newMsg.receiver = new User(userId, email, email.split("@")[0]);
+                            Map<String, Object> msgValues = newMsg.toMap();
+                            Map<String, Object> childUpdates = new HashMap<>();
+                            childUpdates.put("/trees/" + treeId + "/privateMsg/" + key, msgValues);
+                            myRef.updateChildren(childUpdates);
+                        }
                         finish();
                     }
                 });
