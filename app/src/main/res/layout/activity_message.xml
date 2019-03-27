@@ -75,7 +75,7 @@
                             android:background="@color/fui_transparent"
                             android:ems="10"
                             android:gravity="center"
-                            android:text="This is a place holder and it is real real long"
+                            android:text="This is a very long and it will wrap around i guess"
                             android:textColor="#000"
                             android:textSize="20sp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -87,15 +87,17 @@
                             android:id="@+id/begin_quote_img"
                             android:layout_width="35dp"
                             android:layout_height="35dp"
+                            android:layout_marginStart="16dp"
                             app:layout_constraintBottom_toTopOf="@+id/msg_content"
-                            app:layout_constraintEnd_toStartOf="@+id/msg_content"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:srcCompat="@drawable/quote_begin" />
 
                         <ImageView
                             android:id="@+id/end_quote_img"
                             android:layout_width="35dp"
                             android:layout_height="35dp"
-                            app:layout_constraintStart_toEndOf="@+id/msg_content"
+                            android:layout_marginEnd="16dp"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/msg_content"
                             app:srcCompat="@drawable/quote_end" />
                     </android.support.constraint.ConstraintLayout>
