@@ -93,9 +93,9 @@ public class TreepostFragment extends Fragment {
         map = rootView.findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         MapController mMapController = (MapController) map.getController();
-        GeoPoint gPt = new GeoPoint(49.2057, -122.911); // for New West: 49.2057, -122.9110
+        GeoPoint gPt = new GeoPoint(49.2191, -122.9084); // for New West: 49.2057, -122.9110
         mMapController.setCenter(gPt);
-        mMapController.setZoom(20);
+        mMapController.setZoom(21);
         getLocation();
 
         final List<OverlayItem> items = new ArrayList<>();
@@ -277,8 +277,8 @@ public class TreepostFragment extends Fragment {
                 double longitude = location.getLongitude();
 
                 MapController mMapController = (MapController) map.getController();
-                mMapController.setZoom(20);                                                             // for downtown 49.2825242,-123.1137563
-                GeoPoint gPt = new GeoPoint(latitude - 0.0779, longitude + 0.2044); // for New West: 49.2057, -122.9110
+                                                                       // for downtown 49.2836, -123.1154
+                GeoPoint gPt = new GeoPoint(latitude - 0.0645, longitude + 0.207); // for New West: 49.2191, -122.9084
                 mMapController.setCenter(gPt);
             }
 
